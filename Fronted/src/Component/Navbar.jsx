@@ -1,123 +1,120 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Navbar = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [loading, setLoading] = useState(false);
+  // =========================
+  // Check Login
+  // =========================
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
 
   // =========================
-  // Input Change
+  // Logout
   // =========================
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+
+    setIsLoggedIn(false);
+    setMenuOpen(false);
+
+    navigate("/login");
   };
 
   // =========================
-  // Login
+  // Close Menu
   // =========================
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      setLoading(true);
-
-      const response = await fetch("http://localhost:8080/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
-
-      const result = await response.json();
-
-      console.log("Login response:", result);
-
-      // =========================
-      // Login Success
-      // =========================
-      if (response.ok && result.token) {
-        // Save JWT token
-        localStorage.setItem("token", result.token);
-
-        // Optional: save user information
-        localStorage.setItem("user", JSON.stringify(result.user));
-
-        alert("Login successful ❤️");
-
-        // Go to home
-        navigate("/");
-      } else {
-        alert(result.message || "Invalid email or password");
-      }
-    } catch (error) {
-      console.log("Login error:", error);
-      alert("Unable to connect to server");
-    } finally {
-      setLoading(false);
-    }
+  const closeMenu = () => {
+    setMenuOpen(false);
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card">
-        <h2>Welcome Back</h2>
+    <nav className="navbar">
+      {/* =========================
+          Logo
+      ========================= */}
+      <Link to="/" className="logo" onClick={closeMenu}>
+        <span className="logo-icon">
+          <i className="bi bi-house-door-fill"></i>
+        </span>
+        Dream<span>Estate</span>
+      </Link>
 
-        <p>Login to your DreamEstate account</p>
+      {/* =========================
+          Mobile Menu Button
+      ========================= */}
+      <button className="menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
+        <i className="bi bi-list"></i>
+      </button>
 
-        <form onSubmit={handleSubmit}>
-          {/* Email */}
-          <div className="form-group">
-            <label>Email</label>
+      {/* =========================
+          Navigation Links
+      ========================= */}
+      <ul className={`nav-links ${menuOpen ? "show-menu" : ""}`}>
+        <li>
+          <Link to="/" onClick={closeMenu}>
+            Home
+          </Link>
+        </li>
 
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
+        <li>
+          <Link to="/properties" onClick={closeMenu}>
+            Properties
+          </Link>
+        </li>
 
-          {/* Password */}
-          <div className="form-group">
-            <label>Password</label>
+        <li>
+          <Link to="/about" onClick={closeMenu}>
+            About
+          </Link>
+        </li>
 
-            <input
-              type="password"
-              name="password"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
+        <li>
+          <Link to="/contact" onClick={closeMenu}>
+            Contact
+          </Link>
+        </li>
 
-          {/* Login Button */}
-          <button type="submit" className="auth-submit" disabled={loading}>
-            {loading ? "Logging in..." : "Login"}
+        {/* Wishlist only when logged in */}
+        {isLoggedIn && (
+          <li>
+            <Link to="/wishlist" onClick={closeMenu}>
+              <i className="bi bi-heart me-1"></i>
+              Wishlist
+            </Link>
+          </li>
+        )}
+      </ul>
+
+      {/* =========================
+          Auth Buttons
+      ========================= */}
+      <div className="auth-buttons">
+        {!isLoggedIn ? (
+          <>
+            <Link to="/login" className="login-btn" onClick={closeMenu}>
+              Login
+            </Link>
+
+            <Link to="/register" className="register-btn" onClick={closeMenu}>
+              Register
+            </Link>
+          </>
+        ) : (
+          <button type="button" className="register-btn" onClick={handleLogout}>
+            <i className="bi bi-box-arrow-right me-1"></i>
+            Logout
           </button>
-        </form>
-
-        <p className="auth-bottom">
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
+        )}
       </div>
-    </div>
+    </nav>
   );
 };
 
-export default Login;
+export default Navbar;
