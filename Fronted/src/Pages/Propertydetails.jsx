@@ -6,521 +6,420 @@ const PropertyDetails = () => {
 
   const [property, setProperty] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(0);
 
+  // =========================
+  // Get Property
+  // =========================
   useEffect(() => {
-    fetch("/properties.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const foundProperty = data.find(
-          (item) => item.id === Number(id)
+    const fetchProperty = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/properties/${id}`,
         );
 
-        setProperty(foundProperty);
-      })
-      .catch((error) => {
+        const result = await response.json();
+
+        if (result.status) {
+          setProperty(result.data);
+        } else {
+          console.log(result.message);
+        }
+      } catch (error) {
         console.log("Error fetching property:", error);
-      });
+      }
+    };
+
+    fetchProperty();
   }, [id]);
 
+  // =========================
+  // Add To Wishlist
+  // =========================
+  const handleWishlist = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Please login first");
+        return;
+      }
+
+      setWishlistLoading(true);
+
+      const response = await fetch("http://localhost:8080/api/wishlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+        },
+        body: JSON.stringify({
+          property: id,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.status) {
+        alert("Property added to wishlist ❤️");
+      } else {
+        alert(result.message || "Failed to add wishlist");
+      }
+    } catch (error) {
+      console.log("Wishlist error:", error);
+      alert("Something went wrong");
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
+  // =========================
   // Loading
+  // =========================
   if (!property) {
     return (
-      <div className="container text-center py-5">
-        <h4>Loading property...</h4>
+      <div className="property-loading text-center py-5">
+        <div className="spinner-border mb-3"></div>
+        <h5>Loading property...</h5>
       </div>
     );
   }
 
+  // =========================
+  // Images
+  // =========================
+  const images =
+    property.images?.length > 0 ? property.images : ["/default-property.jpg"];
+
   return (
-    <section className="py-5 bg-light">
-
+    <section className="property-details-page">
       <div className="container">
-
-        {/* Back Button */}
-
-        <div className="mb-4">
-          <Link
-            to="/properties"
-            className="btn btn-outline-dark"
-          >
+        {/* =========================
+            Top Navigation
+        ========================= */}
+        <div className="details-topbar">
+          <Link to="/properties" className="back-link">
             <i className="bi bi-arrow-left me-2"></i>
             Back to Properties
           </Link>
+
+          <button
+            className="details-wishlist"
+            onClick={handleWishlist}
+            disabled={wishlistLoading}
+          >
+            <i
+              className={`bi ${
+                wishlistLoading ? "bi-hourglass-split" : "bi-heart"
+              }`}
+            ></i>
+          </button>
         </div>
 
-
         {/* =========================
-            Main Property Card
+            Main Details
         ========================= */}
+        <div className="details-wrapper">
+          {/* =========================
+              LEFT SIDE - Gallery
+          ========================= */}
+          <div className="details-gallery">
+            {/* Main Image */}
+            <div className="main-property-image">
+              <img src={images[selectedImage]} alt={property.title} />
 
-        <div className="card border-0 shadow-sm overflow-hidden">
-
-          <div className="row g-0">
-
-            {/* =========================
-                Property Image
-            ========================= */}
-
-            <div className="col-lg-6">
-
-              <img
-                src={property.image}
-                alt={property.title}
-                className="w-100"
-                style={{
-                  height: "700px",
-                  objectFit: "cover",
-                }}
-              />
-
+              {/* Wishlist on Image */}
+              <button
+                className="image-heart"
+                onClick={handleWishlist}
+                disabled={wishlistLoading}
+              >
+                <i
+                  className={`bi ${
+                    wishlistLoading ? "bi-hourglass-split" : "bi-heart"
+                  }`}
+                ></i>
+              </button>
             </div>
 
-
-            {/* =========================
-                Property Information
-            ========================= */}
-
-            <div className="col-lg-6">
-
-              <div className="p-4 p-lg-5">
-
-                {/* Property Type */}
-
-                <span
-                  className="badge mb-3"
-                  style={{
-                    background: "#d4a017",
-                    fontSize: "13px",
-                  }}
-                >
-                  {property.type}
-                </span>
-
-
-                {/* Title */}
-
-                <h1 className="fw-bold mb-3">
-                  {property.title}
-                </h1>
-
-
-                {/* Location */}
-
-                <p className="text-muted mb-4">
-
-                  <i className="bi bi-geo-alt me-2"></i>
-
-                  {property.location}
-
-                </p>
-
-
-                {/* Price */}
-
-                <h2
-                  className="fw-bold mb-4"
-                  style={{
-                    color: "#d4a017",
-                  }}
-                >
-                  {property.price}
-                </h2>
-
-
-                {/* =========================
-                    Property Features
-                ========================= */}
-
-                <div className="row g-3 mb-4">
-
-                  {/* Bedrooms */}
-
-                  <div className="col-6">
-
-                    <div className="border rounded p-3">
-
-                      <i className="bi bi-door-open fs-4"></i>
-
-                      <p className="text-muted small mb-1">
-                        Bedrooms
-                      </p>
-
-                      <h6 className="fw-bold mb-0">
-                        {property.bedrooms} BHK
-                      </h6>
-
-                    </div>
-
-                  </div>
-
-
-                  {/* Bathrooms */}
-
-                  <div className="col-6">
-
-                    <div className="border rounded p-3">
-
-                      <i className="bi bi-droplet fs-4"></i>
-
-                      <p className="text-muted small mb-1">
-                        Bathrooms
-                      </p>
-
-                      <h6 className="fw-bold mb-0">
-                        {property.bathrooms}
-                      </h6>
-
-                    </div>
-
-                  </div>
-
-
-                  {/* Area */}
-
-                  <div className="col-6">
-
-                    <div className="border rounded p-3">
-
-                      <i className="bi bi-rulers fs-4"></i>
-
-                      <p className="text-muted small mb-1">
-                        Area
-                      </p>
-
-                      <h6 className="fw-bold mb-0">
-                        {property.area} sq.ft
-                      </h6>
-
-                    </div>
-
-                  </div>
-
-
-                  {/* Property Type */}
-
-                  <div className="col-6">
-
-                    <div className="border rounded p-3">
-
-                      <i className="bi bi-buildings fs-4"></i>
-
-                      <p className="text-muted small mb-1">
-                        Property Type
-                      </p>
-
-                      <h6 className="fw-bold mb-0">
-                        {property.type}
-                      </h6>
-
-                    </div>
-
-                  </div>
-
-                </div>
-
-
-                {/* =========================
-                    Description
-                ========================= */}
-
-                <h5 className="fw-bold mb-2">
-                  Property Description
-                </h5>
-
-                <p className="text-muted lh-lg">
-                  {property.description}
-                </p>
-
-
-                {/* =========================
-                    Contact Button
-                ========================= */}
-
-                <div className="d-flex gap-2 mt-4">
-
-                  <button
-                    className="btn flex-grow-1"
-                    style={{
-                      background: "#d4a017",
-                      color: "white",
-                    }}
-                    onClick={() => setShowForm(true)}
+            {/* Thumbnails */}
+            {property.images?.length > 0 && (
+              <div className="property-thumbnails">
+                {images.slice(0, 4).map((image, index) => (
+                  <div
+                    key={index}
+                    className={`property-thumbnail ${
+                      selectedImage === index ? "active" : ""
+                    }`}
+                    onClick={() => setSelectedImage(index)}
                   >
-
-                    <i className="bi bi-telephone me-2"></i>
-
-                    Contact Agent
-
-                  </button>
-
-                </div>
-
-
-                {/* =========================
-                    Contact Form
-                ========================= */}
-
-                {showForm && (
-
-                  <div className="card border-0 shadow-sm mt-4">
-
-                    <div className="card-body p-4">
-
-                      <h4 className="fw-bold mb-2">
-                        Contact Agent
-                      </h4>
-
-                      <p className="text-muted mb-4">
-                        Interested in {property.title}?
-                        Send us your enquiry.
-                      </p>
-
-
-                      <form>
-
-                        {/* Name */}
-
-                        <div className="mb-3">
-
-                          <label className="form-label">
-                            Your Name
-                          </label>
-
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Enter your name"
-                            required
-                          />
-
-                        </div>
-
-
-                        {/* Email */}
-
-                        <div className="mb-3">
-
-                          <label className="form-label">
-                            Email
-                          </label>
-
-                          <input
-                            type="email"
-                            className="form-control"
-                            placeholder="Enter your email"
-                            required
-                          />
-
-                        </div>
-
-
-                        {/* Phone */}
-
-                        <div className="mb-3">
-
-                          <label className="form-label">
-                            Phone
-                          </label>
-
-                          <input
-                            type="tel"
-                            className="form-control"
-                            placeholder="Enter your phone number"
-                            required
-                          />
-
-                        </div>
-
-
-                        {/* Message */}
-
-                        <div className="mb-3">
-
-                          <label className="form-label">
-                            Message
-                          </label>
-
-                          <textarea
-                            className="form-control"
-                            rows="4"
-                            placeholder="I'm interested in this property..."
-                            required
-                          ></textarea>
-
-                        </div>
-
-
-                        {/* Form Buttons */}
-
-                        <div className="d-flex gap-2">
-
-                          <button
-                            type="submit"
-                            className="btn btn-dark"
-                          >
-                            Send Enquiry
-                          </button>
-
-
-                          <button
-                            type="button"
-                            className="btn btn-outline-secondary"
-                            onClick={() => setShowForm(false)}
-                          >
-                            Cancel
-                          </button>
-
-                        </div>
-
-                      </form>
-
-                    </div>
-
+                    <img src={image} alt={`${property.title}-${index + 1}`} />
                   </div>
-
-                )}
-
+                ))}
               </div>
-
-            </div>
-
+            )}
           </div>
 
-        </div>
+          {/* =========================
+              RIGHT SIDE
+          ========================= */}
+          <div className="details-content">
+            {/* Property Type */}
+            <span className="details-badge">{property.propertyType}</span>
 
+            {/* Title */}
+            <h1 className="details-title">{property.title}</h1>
 
-        {/* =========================
-            Additional Information
-        ========================= */}
+            {/* Location */}
+            <p className="details-location">
+              <i className="bi bi-geo-alt-fill me-2"></i>
 
-        <div className="card border-0 shadow-sm mt-4">
+              {property.location}
 
-          <div className="card-body p-4">
+              {property.city && `, ${property.city}`}
+            </p>
 
-            <h4 className="fw-bold mb-4">
-              Property Information
-            </h4>
+            {/* Price */}
+            <div className="details-price">
+              ₹{Number(property.price).toLocaleString("en-IN")}
+            </div>
 
-
-            <div className="row">
-
-              {/* Property ID */}
-
-              <div className="col-md-4 mb-3">
-
-                <p className="text-muted mb-1">
-                  Property ID
-                </p>
-
-                <h6 className="fw-bold">
-                  #{property.id}
-                </h6>
-
-              </div>
-
-
-              {/* Property Type */}
-
-              <div className="col-md-4 mb-3">
-
-                <p className="text-muted mb-1">
-                  Property Type
-                </p>
-
-                <h6 className="fw-bold">
-                  {property.type}
-                </h6>
-
-              </div>
-
-
-              {/* Location */}
-
-              <div className="col-md-4 mb-3">
-
-                <p className="text-muted mb-1">
-                  Location
-                </p>
-
-                <h6 className="fw-bold">
-                  {property.location}
-                </h6>
-
-              </div>
-
-
+            {/* =========================
+                Basic Information
+            ========================= */}
+            <div className="details-basic-info">
               {/* Bedrooms */}
+              <div className="basic-item">
+                <i className="bi bi-door-open"></i>
 
-              <div className="col-md-4 mb-3">
+                <div>
+                  <small>Bedrooms</small>
 
-                <p className="text-muted mb-1">
-                  Bedrooms
-                </p>
-
-                <h6 className="fw-bold">
-                  {property.bedrooms} BHK
-                </h6>
-
+                  <strong>{property.bedrooms} BHK</strong>
+                </div>
               </div>
-
 
               {/* Bathrooms */}
+              <div className="basic-item">
+                <i className="bi bi-droplet"></i>
 
-              <div className="col-md-4 mb-3">
+                <div>
+                  <small>Bathrooms</small>
 
-                <p className="text-muted mb-1">
-                  Bathrooms
-                </p>
-
-                <h6 className="fw-bold">
-                  {property.bathrooms}
-                </h6>
-
+                  <strong>{property.bathrooms}</strong>
+                </div>
               </div>
-
 
               {/* Area */}
+              <div className="basic-item">
+                <i className="bi bi-rulers"></i>
 
-              <div className="col-md-4 mb-3">
+                <div>
+                  <small>Area</small>
 
-                <p className="text-muted mb-1">
-                  Area
-                </p>
-
-                <h6 className="fw-bold">
-                  {property.area} sq.ft
-                </h6>
-
+                  <strong>{property.areaSize} sq.ft</strong>
+                </div>
               </div>
 
+              {/* Property Type */}
+              <div className="basic-item">
+                <i className="bi bi-buildings"></i>
 
-              {/* Price */}
+                <div>
+                  <small>Type</small>
 
-              <div className="col-md-4 mb-3">
-
-                <p className="text-muted mb-1">
-                  Price
-                </p>
-
-                <h6
-                  className="fw-bold"
-                  style={{
-                    color: "#d4a017",
-                  }}
-                >
-                  {property.price}
-                </h6>
-
+                  <strong>{property.propertyType}</strong>
+                </div>
               </div>
-
             </div>
 
-          </div>
+            {/* =========================
+                About Property
+            ========================= */}
+            <div className="about-property">
+              <h3>About Property</h3>
 
+              <p>
+                {property.description ||
+                  "No description available for this property."}
+              </p>
+            </div>
+
+            {/* =========================
+                Property Location Info
+            ========================= */}
+            <div className="property-features">
+              <h3>Location</h3>
+
+              <div className="features-grid">
+                <div className="feature-item">
+                  <i className="bi bi-geo-alt-fill"></i>
+
+                  <span>{property.location}</span>
+                </div>
+
+                <div className="feature-item">
+                  <i className="bi bi-buildings"></i>
+
+                  <span>{property.city}</span>
+                </div>
+
+                <div className="feature-item">
+                  <i className="bi bi-map"></i>
+
+                  <span>{property.area}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* =========================
+                Contact Agent
+            ========================= */}
+            <button
+              className="contact-agent-btn"
+              onClick={() => setShowForm(true)}
+            >
+              <i className="bi bi-telephone me-2"></i>
+              Contact Agent
+            </button>
+
+            {/* =========================
+                Contact Form
+            ========================= */}
+            {showForm && (
+              <div className="contact-form-box">
+                <div className="contact-form-header">
+                  <div>
+                    <h3>Contact Agent</h3>
+
+                    <p>Interested in this property?</p>
+                  </div>
+
+                  <button type="button" onClick={() => setShowForm(false)}>
+                    <i className="bi bi-x-lg"></i>
+                  </button>
+                </div>
+
+                <form>
+                  <div className="form-group">
+                    <label>Your Name</label>
+
+                    <input type="text" placeholder="Enter your name" required />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Email</label>
+
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Phone</label>
+
+                    <input
+                      type="tel"
+                      placeholder="Enter your phone number"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Message</label>
+
+                    <textarea
+                      rows="3"
+                      placeholder="I'm interested in this property..."
+                      required
+                    ></textarea>
+                  </div>
+
+                  <div className="form-buttons">
+                    <button type="submit">Send Enquiry</button>
+
+                    <button type="button" onClick={() => setShowForm(false)}>
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+          </div>
         </div>
 
-      </div>
+        {/* =========================
+            Property Information
+        ========================= */}
+        <div className="property-info-section">
+          <h2>Property Information</h2>
 
+          <div className="info-grid">
+            <div>
+              <span>Property ID</span>
+
+              <strong>#{property._id}</strong>
+            </div>
+
+            <div>
+              <span>Property Type</span>
+
+              <strong>{property.propertyType}</strong>
+            </div>
+
+            <div>
+              <span>Location</span>
+
+              <strong>{property.location}</strong>
+            </div>
+
+            <div>
+              <span>City</span>
+
+              <strong>{property.city}</strong>
+            </div>
+
+            <div>
+              <span>Area</span>
+
+              <strong>{property.area}</strong>
+            </div>
+
+            <div>
+              <span>Bedrooms</span>
+
+              <strong>{property.bedrooms} BHK</strong>
+            </div>
+
+            <div>
+              <span>Bathrooms</span>
+
+              <strong>{property.bathrooms}</strong>
+            </div>
+
+            <div>
+              <span>Area Size</span>
+
+              <strong>{property.areaSize} sq.ft</strong>
+            </div>
+
+            <div>
+              <span>Price</span>
+
+              <strong>₹{Number(property.price).toLocaleString("en-IN")}</strong>
+            </div>
+
+            <div>
+              <span>Status</span>
+
+              <strong>{property.status}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };

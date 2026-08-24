@@ -1,15 +1,15 @@
 import "./App.css";
 import Navbar from "./Component/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
-import PropertyListing from "./Component/PropertyListing";
 import PropertyDetails from "./Pages/Propertydetails";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 import Footer from "./Component/Footer";
+import Wishlist from "./Pages/Wishlist";
+import PropertyListing from "./Pages/PropertyListing";
 
 function App() {
   return (
@@ -18,12 +18,10 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-
-        <Route path="/login" element={<Login />} />
-
+        <Route path="/login" element={<Login />} />{" "}
         <Route path="/register" element={<Register />} />
-
         <Route path="/properties" element={<PropertyListing />} />
+        <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/property-details/:id" element={<PropertyDetails />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />

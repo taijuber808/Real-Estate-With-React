@@ -6,7 +6,13 @@
 
 body {
     font-family: Arial, sans-serif;
+    background: #f7f8fa;
 }
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
 
 .navbar {
     height: 75px;
@@ -44,7 +50,6 @@ body {
 
 .nav-links {
     position: absolute;
-
     left: 50%;
     transform: translateX(-50%);
 
@@ -54,7 +59,6 @@ body {
     gap: 35px;
 
     list-style: none;
-
     margin: 0;
     padding: 0;
 }
@@ -66,7 +70,6 @@ body {
 
 .nav-links a {
     text-decoration: none;
-
     color: white;
 
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -82,7 +85,9 @@ body {
 }
 
 
-/* Login / Register */
+/* =====================================================
+   LOGIN / REGISTER
+===================================================== */
 
 .auth-buttons {
     position: absolute;
@@ -90,7 +95,6 @@ body {
 
     display: flex;
     align-items: center;
-
     gap: 10px;
 }
 
@@ -108,20 +112,14 @@ body {
     font-weight: 500;
 
     text-decoration: none;
-
     cursor: pointer;
 
     transition: 0.3s ease;
 }
 
-
-/* Login */
-
 .login-btn {
     background: transparent;
-
     color: white;
-
     border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
@@ -130,33 +128,27 @@ body {
     color: #061326;
 }
 
-
-/* Register */
-
 .register-btn {
     background: #d4a017;
-
     color: white;
-
     border: 1px solid #d4a017;
 }
 
 .register-btn:hover {
     background: #b8860b;
-
     border-color: #b8860b;
-
     color: white;
 }
 
 
-/* Mobile Menu Button */
+/* =====================================================
+   MOBILE MENU
+===================================================== */
 
 .menu-btn {
     display: none;
 
     background: transparent;
-
     color: white;
 
     border: none;
@@ -198,21 +190,15 @@ body {
 
 .hero-subtitle {
     font-size: 13px;
-
     letter-spacing: 3px;
-
     font-weight: 600;
-
     margin-bottom: 18px;
 }
 
 .hero h1 {
     font-size: 60px;
-
     line-height: 1.05;
-
     font-weight: 700;
-
     margin-bottom: 20px;
 }
 
@@ -222,11 +208,8 @@ body {
 
 .hero-description {
     font-size: 18px;
-
     line-height: 1.6;
-
     color: #f1f1f1;
-
     margin-bottom: 30px;
 }
 
@@ -236,7 +219,6 @@ body {
     padding: 13px 25px;
 
     background: #d4a017;
-
     color: white;
 
     border-radius: 5px;
@@ -244,7 +226,6 @@ body {
     text-decoration: none;
 
     font-size: 15px;
-
     font-weight: 600;
 
     transition: 0.3s ease;
@@ -252,22 +233,19 @@ body {
 
 .hero-btn:hover {
     background: #b8860b;
-
     color: white;
 }
 
 
 /* =====================================================
-   AUTH PAGE - LOGIN / REGISTER
+   AUTH PAGE
 ===================================================== */
 
 .auth-page {
     min-height: calc(100vh - 75px);
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     padding: 40px 20px;
@@ -278,16 +256,11 @@ body {
         url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c");
 
     background-size: cover;
-
     background-position: center;
 }
 
-
-/* Auth Card */
-
 .auth-card {
     width: 100%;
-
     max-width: 420px;
 
     background: white;
@@ -316,9 +289,6 @@ body {
 
     margin-bottom: 30px;
 }
-
-
-/* Form */
 
 .form-group {
     margin-bottom: 20px;
@@ -351,11 +321,8 @@ body {
 }
 
 .form-group input:focus {
-    border-color: #222;
+    border-color: #d4a017;
 }
-
-
-/* Auth Submit */
 
 .auth-submit {
     width: 100%;
@@ -383,12 +350,8 @@ body {
     background: #000;
 }
 
-
-/* Bottom Link */
-
 .auth-bottom {
     margin-top: 25px;
-
 
     text-align: center;
 
@@ -411,7 +374,859 @@ body {
 
 
 /* =====================================================
-   RESPONSIVE - TABLET
+   PROPERTY CARD
+===================================================== */
+
+.property-card {
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    border: 1px solid #eeeeee;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+
+    transition: all 0.3s ease;
+
+    height: 100%;
+}
+
+.property-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.13);
+}
+
+
+/* Property Image */
+
+.property-image {
+    height: 165px;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.property-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+    transition: transform 0.4s ease;
+}
+
+.property-card:hover .property-image img {
+    transform: scale(1.05);
+}
+
+
+/* Badge */
+
+.property-badge {
+    position: absolute;
+
+    top: 9px;
+    left: 9px;
+
+    background: #d4a017;
+
+    color: #ffffff;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    padding: 5px 8px;
+
+    border-radius: 4px;
+
+    text-transform: uppercase;
+}
+
+
+/* Wishlist */
+
+.wishlist-btn {
+    position: absolute;
+
+    top: 8px;
+    right: 8px;
+
+    width: 30px;
+    height: 30px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.95);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+    transition: all 0.2s ease;
+}
+
+.wishlist-btn i {
+    font-size: 15px;
+    color: #333333;
+}
+
+.wishlist-btn:hover {
+    transform: scale(1.1);
+}
+
+.wishlist-btn:hover i {
+    color: #d4a017;
+}
+
+
+/* Card Content */
+
+.property-content {
+    padding: 12px 13px 13px;
+}
+
+
+/* Title */
+
+.property-title {
+    font-size: 15px;
+
+    font-weight: 700;
+
+    color: #172033;
+
+    margin: 0 0 5px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* Location */
+
+.property-location {
+    font-size: 11px;
+
+    color: #777777;
+
+    margin: 0 0 10px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.property-location i {
+    color: #d4a017;
+
+    margin-right: 4px;
+}
+
+
+/* Property Info */
+
+.property-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    border-top: 1px solid #eeeeee;
+
+    padding-top: 9px;
+
+    margin-bottom: 10px;
+}
+
+.property-info span {
+    font-size: 10px;
+
+    color: #666666;
+
+    white-space: nowrap;
+}
+
+.property-info i {
+    font-size: 11px;
+
+    color: #555555;
+
+    margin-right: 4px;
+}
+
+
+/* Bottom */
+
+.property-bottom {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+/* Price */
+
+.property-price small {
+    display: block;
+
+    font-size: 9px;
+
+    color: #999999;
+
+    margin-bottom: 1px;
+}
+
+.property-price h6 {
+    margin: 0;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: #d4a017;
+}
+
+
+/* View Details */
+
+.view-btn {
+    text-decoration: none;
+
+    background: #101d31;
+
+    color: #ffffff;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    padding: 7px 10px;
+
+    border-radius: 5px;
+
+    transition: all 0.2s ease;
+}
+
+.view-btn:hover {
+    background: #d4a017;
+
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   PROPERTY DETAILS PAGE
+===================================================== */
+
+.property-details-page {
+    background: #f7f8fa;
+
+    min-height: 100vh;
+
+    padding: 35px 0 60px;
+}
+
+
+/* Top Bar */
+
+.details-topbar {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.back-link {
+    text-decoration: none;
+
+    color: #172033;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+.back-link i {
+    margin-right: 7px;
+}
+
+.back-link:hover {
+    color: #d4a017;
+}
+
+.details-wishlist {
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 50%;
+
+    background: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.details-wishlist i {
+    font-size: 17px;
+}
+
+.details-wishlist:hover {
+    color: #d4a017;
+}
+
+
+/* Main Details Wrapper */
+
+.details-wrapper {
+    background: white;
+
+    border-radius: 12px;
+
+    padding: 18px;
+
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.07);
+
+    display: grid;
+
+    grid-template-columns: 1.15fr 0.85fr;
+
+    gap: 28px;
+}
+
+
+/* =====================================================
+   PROPERTY GALLERY
+===================================================== */
+
+.details-gallery {
+    min-width: 0;
+}
+
+.main-property-image {
+    width: 100%;
+
+    height: 410px;
+
+    border-radius: 9px;
+
+    overflow: hidden;
+
+    position: relative;
+
+    background: #eee;
+}
+
+.main-property-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+/* Image Heart */
+
+.image-heart {
+    position: absolute;
+
+    top: 12px;
+    right: 12px;
+
+    width: 35px;
+    height: 35px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.95);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+.image-heart i {
+    font-size: 17px;
+}
+
+.image-heart:hover {
+    color: #d4a017;
+}
+
+
+/* =====================================================
+   THUMBNAILS
+===================================================== */
+
+.property-thumbnails {
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 9px;
+}
+
+.property-thumbnail {
+    width: 88px;
+
+    height: 62px;
+
+    border-radius: 5px;
+
+    overflow: hidden;
+
+    cursor: pointer;
+
+    border: 2px solid transparent;
+
+    transition: 0.2s;
+
+    flex-shrink: 0;
+}
+
+.property-thumbnail img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.property-thumbnail:hover {
+    border-color: #d4a017;
+}
+
+.property-thumbnail.active {
+    border-color: #d4a017;
+}
+
+
+/* =====================================================
+   DETAILS CONTENT
+===================================================== */
+
+.details-content {
+    padding: 5px 8px;
+}
+
+
+/* Details Badge */
+
+.details-badge {
+    display: inline-block;
+
+    background: #d4a017;
+
+    color: white;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    padding: 5px 9px;
+
+    border-radius: 4px;
+
+    text-transform: uppercase;
+
+    margin-bottom: 9px;
+}
+
+
+/* Details Title */
+
+.details-title {
+    font-size: 25px;
+
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    color: #172033;
+
+    margin: 0 0 8px;
+}
+
+
+/* Details Location */
+
+.details-location {
+    color: #777;
+
+    font-size: 12px;
+
+    margin-bottom: 10px;
+}
+
+.details-location i {
+    color: #d4a017;
+
+    margin-right: 5px;
+}
+
+
+/* Details Price */
+
+.details-price {
+    font-size: 22px;
+
+    font-weight: 800;
+
+    color: #d4a017;
+
+    margin-bottom: 15px;
+}
+
+
+/* =====================================================
+   BASIC PROPERTY INFORMATION
+===================================================== */
+
+.details-basic-info {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+
+    padding-bottom: 15px;
+
+    border-bottom: 1px solid #eee;
+}
+
+.basic-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+}
+
+.basic-item>i {
+    font-size: 18px;
+
+    color: #d4a017;
+}
+
+.basic-item small {
+    display: block;
+
+    font-size: 9px;
+
+    color: #999;
+
+    margin-bottom: 1px;
+}
+
+.basic-item strong {
+    display: block;
+
+    font-size: 11px;
+
+    color: #333;
+}
+
+
+/* =====================================================
+   ABOUT PROPERTY
+===================================================== */
+
+.about-property {
+    padding-top: 13px;
+}
+
+.about-property h3,
+.property-features h3 {
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: #172033;
+
+    margin-bottom: 6px;
+}
+
+.about-property p {
+    color: #666;
+
+    font-size: 10px;
+
+    line-height: 1.6;
+
+    margin-bottom: 12px;
+}
+
+
+/* =====================================================
+   FEATURES
+===================================================== */
+
+.property-features {
+    margin-top: 8px;
+}
+
+.features-grid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 7px;
+}
+
+.feature-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    font-size: 10px;
+
+    color: #444;
+}
+
+.feature-item i {
+    color: #d4a017;
+
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   CONTACT AGENT
+===================================================== */
+
+.contact-agent-btn {
+    width: 100%;
+
+    border: none;
+
+    background: #101d31;
+
+    color: white;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    padding: 10px;
+
+    border-radius: 5px;
+
+    margin-top: 15px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.contact-agent-btn i {
+    margin-right: 7px;
+}
+
+.contact-agent-btn:hover {
+    background: #d4a017;
+}
+
+
+/* =====================================================
+   CONTACT FORM
+===================================================== */
+
+.contact-form-box {
+    margin-top: 15px;
+
+    padding: 15px;
+
+    border: 1px solid #eee;
+
+    border-radius: 8px;
+
+    background: #fafafa;
+}
+
+.contact-form-header {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    margin-bottom: 12px;
+}
+
+.contact-form-header h3 {
+    font-size: 16px;
+
+    margin: 0;
+}
+
+.contact-form-header p {
+    color: #888;
+
+    font-size: 10px;
+
+    margin: 3px 0 0;
+}
+
+.contact-form-header button {
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+}
+
+.form-buttons {
+    display: flex;
+
+    gap: 8px;
+}
+
+.form-buttons button {
+    border: none;
+
+    padding: 8px 12px;
+
+    border-radius: 5px;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.form-buttons button:first-child {
+    background: #101d31;
+
+    color: white;
+}
+
+.form-buttons button:last-child {
+    background: #eee;
+
+    color: #333;
+}
+
+
+/* =====================================================
+   PROPERTY INFORMATION
+===================================================== */
+
+.property-info-section {
+    background: white;
+
+    margin-top: 20px;
+
+    padding: 22px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+}
+
+.property-info-section h2 {
+    font-size: 19px;
+
+    color: #172033;
+
+    margin-bottom: 18px;
+}
+
+.info-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 20px;
+}
+
+.info-grid span {
+    display: block;
+
+    font-size: 10px;
+
+    color: #999;
+
+    margin-bottom: 4px;
+}
+
+.info-grid strong {
+    font-size: 12px;
+
+    color: #333;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.property-loading {
+    min-height: 60vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+}
+
+.property-loading h5 {
+    color: #555;
+
+    font-size: 15px;
+}
+
+
+/* =====================================================
+   TABLET RESPONSIVE
 ===================================================== */
 
 @media (max-width: 900px) {
@@ -437,8 +1252,6 @@ body {
     .auth-buttons {
         display: none;
     }
-
-    /* Mobile Navigation */
 
     .nav-links {
         position: absolute;
@@ -478,6 +1291,7 @@ body {
         padding: 10px;
     }
 
+
     /* Hero */
 
     .hero {
@@ -493,14 +1307,31 @@ body {
     .hero-description {
         font-size: 16px;
     }
+
+
+    /* Property Details */
+
+    .details-wrapper {
+        grid-template-columns: 1fr;
+
+        gap: 20px;
+    }
+
+    .main-property-image {
+        height: 400px;
+    }
+
+    .details-title {
+        font-size: 24px;
+    }
 }
 
 
 /* =====================================================
-   RESPONSIVE - MOBILE
+   MOBILE
 ===================================================== */
 
-@media (max-width: 500px) {
+@media (max-width: 768px) {
 
     /* Navbar */
 
@@ -526,6 +1357,7 @@ body {
         font-size: 28px;
     }
 
+
     /* Hero */
 
     .hero {
@@ -546,6 +1378,7 @@ body {
         font-size: 15px;
     }
 
+
     /* Auth */
 
     .auth-page {
@@ -558,5 +1391,116 @@ body {
 
     .auth-card h2 {
         font-size: 26px;
+    }
+
+
+    /* Property Card */
+
+    .property-image {
+        height: 180px;
+    }
+
+    .property-title {
+        font-size: 14px;
+    }
+
+
+    /* Property Details */
+
+    .property-details-page {
+        padding: 20px 0 40px;
+    }
+
+    .details-wrapper {
+        padding: 12px;
+
+        border-radius: 8px;
+    }
+
+    .main-property-image {
+        height: 330px;
+    }
+
+    .property-thumbnail {
+        width: 75px;
+
+        height: 55px;
+    }
+
+    .details-title {
+        font-size: 21px;
+    }
+
+    .details-price {
+        font-size: 20px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 576px) {
+
+    /* Property Card */
+
+    .property-image {
+        height: 170px;
+    }
+
+    .property-content {
+        padding: 11px;
+    }
+
+    .property-info {
+        gap: 10px;
+    }
+
+
+    /* Property Details */
+
+    .details-topbar {
+        margin-bottom: 12px;
+    }
+
+    .back-link {
+        font-size: 12px;
+    }
+
+    .main-property-image {
+        height: 250px;
+    }
+
+    .property-thumbnails {
+        overflow-x: auto;
+    }
+
+    .property-thumbnail {
+        min-width: 72px;
+    }
+
+    .details-title {
+        font-size: 21px;
+    }
+
+    .details-price {
+        font-size: 20px;
+    }
+
+    .details-basic-info {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
     }
 }
