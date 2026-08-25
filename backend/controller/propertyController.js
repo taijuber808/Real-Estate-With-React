@@ -1,5 +1,9 @@
-import Property from "../model/property.js";
+import Property from "../model/Property.js";
 
+// =========================
+// CREATE PROPERTY
+// Owner Only
+// =========================
 export const createProperty = async (req, res) => {
   try {
     const {
@@ -16,7 +20,7 @@ export const createProperty = async (req, res) => {
       images,
     } = req.body;
 
-    const data = await Property.create({
+    const property = await Property.create({
       title,
       description,
       price,
@@ -34,7 +38,7 @@ export const createProperty = async (req, res) => {
     res.status(201).json({
       status: true,
       message: "Property created successfully",
-      data,
+      data: property,
     });
   } catch (error) {
     res.status(500).json({
@@ -44,6 +48,10 @@ export const createProperty = async (req, res) => {
   }
 };
 
+// =========================
+// GET ALL PROPERTIES
+// Public
+// =========================
 export const getProperties = async (req, res) => {
   try {
     const {
@@ -59,8 +67,9 @@ export const getProperties = async (req, res) => {
       limit = 10,
     } = req.query;
 
-    let filter = {};
+    const filter = {};
 
+    // Search
     if (search) {
       filter.$or = [
         { title: { $regex: search, $options: "i" } },
@@ -69,18 +78,25 @@ export const getProperties = async (req, res) => {
       ];
     }
 
+    // City
     if (city) {
-      filter.city = { $regex: city, $options: "i" };
+      filter.city = {
+        $regex: city,
+        $options: "i",
+      };
     }
 
+    // Property Type
     if (propertyType) {
       filter.propertyType = propertyType;
     }
 
+    // Bedrooms
     if (bedrooms) {
       filter.bedrooms = Number(bedrooms);
     }
 
+    // Price
     if (minPrice || maxPrice) {
       filter.price = {};
 
@@ -93,7 +109,8 @@ export const getProperties = async (req, res) => {
       }
     }
 
-    let sortOption = {};
+    // Sorting
+    const sortOption = {};
 
     if (sort) {
       sortOption[sort] = order === "desc" ? -1 : 1;
@@ -120,6 +137,10 @@ export const getProperties = async (req, res) => {
   }
 };
 
+// =========================
+// GET SINGLE PROPERTY
+// Public
+// =========================
 export const getProperty = async (req, res) => {
   try {
     const { id } = req.params;
@@ -131,12 +152,12 @@ export const getProperty = async (req, res) => {
       });
     }
 
-    const data = await Property.findById(id).populate(
+    const property = await Property.findById(id).populate(
       "owner",
       "name email phone",
     );
 
-    if (!data) {
+    if (!property) {
       return res.status(404).json({
         status: false,
         message: "Property not found",
@@ -146,7 +167,7 @@ export const getProperty = async (req, res) => {
     res.status(200).json({
       status: true,
       message: "Property fetched successfully",
-      data,
+      data: property,
     });
   } catch (error) {
     res.status(500).json({
@@ -156,6 +177,10 @@ export const getProperty = async (req, res) => {
   }
 };
 
+// =========================
+// UPDATE PROPERTY
+// Owner + Own Property Only
+// =========================
 export const updateProperty = async (req, res) => {
   try {
     const { id } = req.params;
@@ -167,6 +192,7 @@ export const updateProperty = async (req, res) => {
       });
     }
 
+    // Find property
     const property = await Property.findById(id);
 
     if (!property) {
@@ -176,25 +202,55 @@ export const updateProperty = async (req, res) => {
       });
     }
 
-    if (
-      property.owner.toString() !== req.user.id.toString() &&
-      req.user.role !== "admin"
-    ) {
+    // Check property owner
+    if (property.owner.toString() !== req.user.id.toString()) {
       return res.status(403).json({
         status: false,
-        message: "You are not allowed to update this property",
+        message: "You can only edit your own property",
       });
     }
 
-    const data = await Property.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const {
+      title,
+      description,
+      price,
+      propertyType,
+      location,
+      city,
+      area,
+      bedrooms,
+      bathrooms,
+      areaSize,
+      images,
+      status,
+    } = req.body;
+
+    const updatedProperty = await Property.findByIdAndUpdate(
+      id,
+      {
+        title,
+        description,
+        price,
+        propertyType,
+        location,
+        city,
+        area,
+        bedrooms,
+        bathrooms,
+        areaSize,
+        images,
+        status,
+      },
+      {
+        new: true,
+        runValidators: true,
+      },
+    ).populate("owner", "name email phone");
 
     res.status(200).json({
       status: true,
       message: "Property updated successfully",
-      data,
+      data: updatedProperty,
     });
   } catch (error) {
     res.status(500).json({
@@ -204,6 +260,10 @@ export const updateProperty = async (req, res) => {
   }
 };
 
+// =========================
+// DELETE PROPERTY
+// Owner + Own Property Only
+// =========================
 export const deleteProperty = async (req, res) => {
   try {
     const { id } = req.params;
@@ -215,6 +275,7 @@ export const deleteProperty = async (req, res) => {
       });
     }
 
+    // Find property
     const property = await Property.findById(id);
 
     if (!property) {
@@ -224,13 +285,11 @@ export const deleteProperty = async (req, res) => {
       });
     }
 
-    if (
-      property.owner.toString() !== req.user.id.toString() &&
-      req.user.role !== "admin"
-    ) {
+    // Check property owner
+    if (property.owner.toString() !== req.user.id.toString()) {
       return res.status(403).json({
         status: false,
-        message: "You are not allowed to delete this property",
+        message: "You can only delete your own property",
       });
     }
 

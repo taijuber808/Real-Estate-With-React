@@ -3,16 +3,37 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
 
   // =========================
-  // Check Login
+  // Check User
   // =========================
-  useEffect(() => {
+  const checkUser = () => {
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+
+    if (token && storedUser) {
+      setUser(storedUser);
+    } else {
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+
+    // Login / Logout ke baad navbar update
+    window.addEventListener("authChange", checkUser);
+
+    // Dusre tab mein login/logout
+    window.addEventListener("storage", checkUser);
+
+    return () => {
+      window.removeEventListener("authChange", checkUser);
+      window.removeEventListener("storage", checkUser);
+    };
   }, []);
 
   // =========================
@@ -20,9 +41,13 @@ const Navbar = () => {
   // =========================
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
-    setIsLoggedIn(false);
+    setUser(null);
     setMenuOpen(false);
+
+    // Navbar immediately update
+    window.dispatchEvent(new Event("authChange"));
 
     navigate("/login");
   };
@@ -49,44 +74,67 @@ const Navbar = () => {
       {/* =========================
           Mobile Menu Button
       ========================= */}
-      <button className="menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
-        <i className="bi bi-list"></i>
+      <button
+        type="button"
+        className="menu-btn"
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Toggle navigation"
+      >
+        <i className={menuOpen ? "bi bi-x-lg" : "bi bi-list"}></i>
       </button>
 
       {/* =========================
           Navigation Links
       ========================= */}
       <ul className={`nav-links ${menuOpen ? "show-menu" : ""}`}>
+        {/* Home */}
         <li>
           <Link to="/" onClick={closeMenu}>
             Home
           </Link>
         </li>
 
+        {/* Properties */}
         <li>
           <Link to="/properties" onClick={closeMenu}>
             Properties
           </Link>
         </li>
 
+        {/* About */}
         <li>
           <Link to="/about" onClick={closeMenu}>
             About
           </Link>
         </li>
 
+        {/* Contact */}
         <li>
           <Link to="/contact" onClick={closeMenu}>
             Contact
           </Link>
         </li>
 
-        {/* Wishlist only when logged in */}
-        {isLoggedIn && (
+        {/* =========================
+            Wishlist - Logged User
+        ========================= */}
+        {user && (
           <li>
             <Link to="/wishlist" onClick={closeMenu}>
               <i className="bi bi-heart me-1"></i>
               Wishlist
+            </Link>
+          </li>
+        )}
+
+        {/* =========================
+            Add Property - Owner Only
+        ========================= */}
+        {user?.role === "owner" && (
+          <li>
+            <Link to="/create-property" onClick={closeMenu}>
+              <i className="bi bi-house-add me-1"></i>
+              Add Property
             </Link>
           </li>
         )}
@@ -96,21 +144,36 @@ const Navbar = () => {
           Auth Buttons
       ========================= */}
       <div className="auth-buttons">
-        {!isLoggedIn ? (
+        {!user ? (
           <>
+            {/* Login */}
             <Link to="/login" className="login-btn" onClick={closeMenu}>
               Login
             </Link>
 
+            {/* Register */}
             <Link to="/register" className="register-btn" onClick={closeMenu}>
               Register
             </Link>
           </>
         ) : (
-          <button type="button" className="register-btn" onClick={handleLogout}>
-            <i className="bi bi-box-arrow-right me-1"></i>
-            Logout
-          </button>
+          <>
+            {/* Profile */}
+            <Link to="/profile" className="login-btn" onClick={closeMenu}>
+              <i className="bi bi-person me-1"></i>
+              Profile
+            </Link>
+
+            {/* Logout */}
+            <button
+              type="button"
+              className="register-btn"
+              onClick={handleLogout}
+            >
+              <i className="bi bi-box-arrow-right me-1"></i>
+              Logout
+            </button>
+          </>
         )}
       </div>
     </nav>

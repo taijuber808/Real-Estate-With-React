@@ -22,10 +22,9 @@ const propertySchema = new mongoose.Schema(
 
     propertyType: {
       type: String,
-      enum: ["house", "apartment", "villa", "plot", "office", "shop"],
+      enum: ["house", "apartment", "villa","luxury-house"],
       required: true,
     },
-
     location: {
       type: String,
       required: true,
@@ -82,7 +81,7 @@ const propertySchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Property = mongoose.model("Property", propertySchema);

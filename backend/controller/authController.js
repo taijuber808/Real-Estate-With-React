@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../model/user.js";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
   try {
@@ -8,14 +8,19 @@ export const registerUser = async (req, res) => {
 
     if (!name || !email || !password || !phone) {
       return res.status(400).json({
+        status: false,
         message: "All fields are required",
       });
     }
+
+    // Only user or owner allowed
+    const userRole = role === "owner" ? "owner" : "user";
 
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
       return res.status(400).json({
+        status: false,
         message: "User already exists",
       });
     }
@@ -27,11 +32,12 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       phone,
-      role,
+      role: userRole,
     });
 
     res.status(201).json({
-      message: "User registered successfully",
+      status: true,
+      message: "Registration successful",
       user: {
         id: user._id,
         name: user.name,
@@ -42,8 +48,8 @@ export const registerUser = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: "Server error",
-      error: error.message,
+      status: false,
+      message: `Server error: ${error.message}`,
     });
   }
 };
@@ -66,10 +72,7 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) {
       return res.status(401).json({
@@ -85,7 +88,7 @@ export const loginUser = async (req, res) => {
       process.env.JWT_SECRET_KEY,
       {
         expiresIn: "7d",
-      }
+      },
     );
 
     res.status(200).json({

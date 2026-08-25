@@ -1,3 +1,4 @@
+import Property from "../model/Property.js";
 import Wishlist from "../model/wishlist.js";
 
 export const addWishlist = async (req, res) => {
@@ -11,6 +12,17 @@ export const addWishlist = async (req, res) => {
       });
     }
 
+    // Check property exists or not
+    const property = await Property.findById(propertyId);
+
+    if (!property) {
+      return res.status(404).json({
+        status: false,
+        message: "Property not found",
+      });
+    }
+
+    // Check already in wishlist
     const existingWishlist = await Wishlist.findOne({
       user: req.user.id,
       property: propertyId,
@@ -40,7 +52,6 @@ export const addWishlist = async (req, res) => {
     });
   }
 };
-
 
 // Get My Wishlist
 export const getWishlist = async (req, res) => {

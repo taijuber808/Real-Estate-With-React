@@ -1,18 +1,27 @@
 import express from "express";
-import { isLoggedIn } from "../middleware/authMiddleware.js";
-import { createProperty, deleteProperty, getProperties, getProperty, updateProperty } from "../controller/propertyController.js";
-
+import { isLoggedIn, isOwner } from "../middleware/authMiddleware.js";
+import {
+  createProperty,
+  deleteProperty,
+  getProperties,
+  getProperty,
+  updateProperty,
+} from "../controller/propertyController.js";
 
 const propertyrouter = express.Router();
 
-propertyrouter.post("/", isLoggedIn, createProperty);
-
+// Anyone can view
 propertyrouter.get("/", getProperties);
 
 propertyrouter.get("/:id", getProperty);
 
-propertyrouter.patch("/:id", isLoggedIn, updateProperty);
+// Only owner can create
+propertyrouter.post("/", isLoggedIn, isOwner, createProperty);
 
-propertyrouter.delete("/:id", isLoggedIn, deleteProperty);
+// Logged-in owner can update
+propertyrouter.patch("/:id", isLoggedIn, isOwner, updateProperty);
 
-export default propertyrouter ;
+// Logged-in owner can delete
+propertyrouter.delete("/:id", isLoggedIn, isOwner, deleteProperty);
+
+export default propertyrouter;

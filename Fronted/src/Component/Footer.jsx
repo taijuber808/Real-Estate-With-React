@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer
@@ -5,101 +7,239 @@ const Footer = () => {
         background: "#061326",
         color: "white",
       }}
-      className="pt-5 pb-3"
     >
-      <div className="container">
+      {/* =========================
+          TOP FOOTER
+      ========================= */}
+      <div className="container py-5">
+        <div className="row g-4">
+          {/* Brand */}
+          <div className="col-lg-4 col-md-6" data-aos="fade-up">
+            <h3 className="fw-bold mb-3">
+              Dream<span style={{ color: "#d4a017" }}>Estate</span>
+            </h3>
 
-        <div className="row">
-
-          <div className="col-md-5 mb-4">
-
-            <h4 className="fw-bold">
-              🏠 Dream<span style={{ color: "#d4a017" }}>
-                Estate
-              </span>
-            </h4>
-
-            <p className="text-light opacity-75 mt-3">
-              Find your perfect home with DreamEstate.
-              Explore premium houses, apartments and villas.
+            <p className="text-white-50" style={{ maxWidth: "380px" }}>
+              Find your dream home with DreamEstate. Explore apartments, houses,
+              villas and luxury properties in popular locations.
             </p>
 
+            {/* Social Icons */}
+            <div className="d-flex gap-2 mt-4">
+              <a href="#" className="footer-social" aria-label="Facebook">
+                <i className="bi bi-facebook"></i>
+              </a>
+
+              <a href="#" className="footer-social" aria-label="Instagram">
+                <i className="bi bi-instagram"></i>
+              </a>
+
+              <a href="#" className="footer-social" aria-label="Twitter">
+                <i className="bi bi-twitter-x"></i>
+              </a>
+
+              <a href="#" className="footer-social" aria-label="LinkedIn">
+                <i className="bi bi-linkedin"></i>
+              </a>
+            </div>
           </div>
 
-          <div className="col-md-3 mb-4">
+          {/* Quick Links */}
+          <div
+            className="col-lg-2 col-md-6"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <h5 className="fw-bold mb-4">Quick Links</h5>
 
-            <h6 className="fw-bold mb-3">Quick Links</h6>
+            <ul className="list-unstyled">
+              <li className="mb-3">
+                <Link to="/" className="footer-link">
+                  Home
+                </Link>
+              </li>
 
-            <p className="mb-2">
-              <a
-                href="/"
-                className="text-light text-decoration-none"
-              >
-                Home
-              </a>
-            </p>
+              <li className="mb-3">
+                <Link to="/properties" className="footer-link">
+                  Properties
+                </Link>
+              </li>
 
-            <p className="mb-2">
-              <a
-                href="/properties"
-                className="text-light text-decoration-none"
-              >
-                Properties
-              </a>
-            </p>
+              <li className="mb-3">
+                <Link to="/about" className="footer-link">
+                  About Us
+                </Link>
+              </li>
 
-            <p className="mb-2">
-              <a
-                href="/about"
-                className="text-light text-decoration-none"
-              >
-                About
-              </a>
-            </p>
-
-            <p className="mb-0">
-              <a
-                href="/contact"
-                className="text-light text-decoration-none"
-              >
-                Contact
-              </a>
-            </p>
-
+              <li className="mb-3">
+                <Link to="/contact" className="footer-link">
+                  Contact
+                </Link>
+              </li>
+            </ul>
           </div>
 
-          <div className="col-md-4 mb-4">
+          {/* Property Types */}
+          <div
+            className="col-lg-3 col-md-6"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            <h5 className="fw-bold mb-4">Property Types</h5>
 
-            <h6 className="fw-bold mb-3">Contact</h6>
+            <ul className="list-unstyled">
+              <li className="mb-3">
+                <Link
+                  to="/properties?propertyType=apartment"
+                  className="footer-link"
+                >
+                  <i className="bi bi-chevron-right me-2"></i>
+                  Apartments
+                </Link>
+              </li>
 
-            <p className="mb-2">
-              <i className="bi bi-geo-alt me-2"></i>
-              Ahmedabad, Gujarat
-            </p>
+              <li className="mb-3">
+                <Link
+                  to="/properties?propertyType=villa"
+                  className="footer-link"
+                >
+                  <i className="bi bi-chevron-right me-2"></i>
+                  Villas
+                </Link>
+              </li>
 
-            <p className="mb-2">
-              <i className="bi bi-envelope me-2"></i>
-              info@dreamestate.com
-            </p>
+              <li className="mb-3">
+                <Link
+                  to="/properties?propertyType=house"
+                  className="footer-link"
+                >
+                  <i className="bi bi-chevron-right me-2"></i>
+                  Houses
+                </Link>
+              </li>
 
-            <p className="mb-0">
-              <i className="bi bi-telephone me-2"></i>
-              +91 98765 43210
-            </p>
-
+              <li className="mb-3">
+                <Link
+                  to="/properties?propertyType=luxury-house"
+                  className="footer-link"
+                >
+                  <i className="bi bi-chevron-right me-2"></i>
+                  Luxury Houses
+                </Link>
+              </li>
+            </ul>
           </div>
 
+          {/* Contact */}
+          <div
+            className="col-lg-3 col-md-6"
+            data-aos="fade-up"
+            data-aos-delay="300"
+          >
+            <h5 className="fw-bold mb-4">Get In Touch</h5>
+
+            <div className="d-flex gap-3 mb-3">
+              <i
+                className="bi bi-geo-alt-fill"
+                style={{ color: "#d4a017" }}
+              ></i>
+
+              <span className="text-white-50">Ahmedabad, Gujarat, India</span>
+            </div>
+
+            <div className="d-flex gap-3 mb-3">
+              <i
+                className="bi bi-telephone-fill"
+                style={{ color: "#d4a017" }}
+              ></i>
+
+              <span className="text-white-50">+91 98765 43210</span>
+            </div>
+
+            <div className="d-flex gap-3 mb-3">
+              <i
+                className="bi bi-envelope-fill"
+                style={{ color: "#d4a017" }}
+              ></i>
+
+              <span className="text-white-50">info@dreamestate.com</span>
+            </div>
+
+            <div className="d-flex gap-3">
+              <i className="bi bi-clock-fill" style={{ color: "#d4a017" }}></i>
+
+              <span className="text-white-50">Mon - Sat: 9 AM - 7 PM</span>
+            </div>
+          </div>
         </div>
-
-        <hr className="border-light opacity-25" />
-
-        <div className="text-center">
-          <p className="mb-0 small opacity-75">
-            © 2026 DreamEstate. All Rights Reserved.
-          </p>
-        </div>
-
       </div>
+
+      {/* =========================
+          BOTTOM FOOTER
+      ========================= */}
+      <div
+        style={{
+          borderTop: "1px solid rgba(255,255,255,0.1)",
+        }}
+      >
+        <div className="container py-3">
+          <div className="row align-items-center">
+            <div className="col-md-6 text-center text-md-start">
+              <p className="text-white-50 small mb-0">
+                © {new Date().getFullYear()} DreamEstate. All rights reserved.
+              </p>
+            </div>
+
+            <div className="col-md-6 text-center text-md-end mt-2 mt-md-0">
+              <Link
+                to="/properties"
+                className="text-decoration-none small"
+                style={{ color: "#d4a017" }}
+              >
+                Find Your Dream Home
+                <i className="bi bi-arrow-right ms-2"></i>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* =========================
+          FOOTER CSS
+      ========================= */}
+      <style>
+        {`
+          .footer-link {
+            color: rgba(255,255,255,0.65);
+            text-decoration: none;
+            transition: 0.3s;
+          }
+
+          .footer-link:hover {
+            color: #d4a017;
+            padding-left: 4px;
+          }
+
+          .footer-social {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            background: rgba(255,255,255,0.08);
+            text-decoration: none;
+            transition: 0.3s;
+          }
+
+          .footer-social:hover {
+            background: #d4a017;
+            color: #061326;
+            transform: translateY(-3px);
+          }
+        `}
+      </style>
     </footer>
   );
 };
