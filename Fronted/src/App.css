@@ -1224,6 +1224,617 @@ body {
     font-size: 15px;
 }
 
+/* =====================================================
+   PROFILE RIGHT SIDE DRAWER
+===================================================== */
+
+.profile-page {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    display: flex;
+    justify-content: flex-end;
+
+    animation: profileOverlay 0.25s ease;
+}
+
+
+/* =====================================================
+   PROFILE DRAWER
+===================================================== */
+
+.profile-container {
+    width: 420px;
+    max-width: 100%;
+    height: 100vh;
+
+    background: #ffffff;
+
+    position: relative;
+
+    overflow-y: auto;
+
+    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.25);
+
+    animation: profileSlide 0.35s ease;
+}
+
+
+/* =====================================================
+   PROFILE HEADER
+===================================================== */
+
+.profile-header {
+    position: sticky;
+    top: 0;
+
+    z-index: 10;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px 24px;
+
+    background: #101d31;
+    color: white;
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.profile-header h2 {
+    margin: 0;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    color: white;
+}
+
+.profile-header p {
+    margin: 5px 0 0;
+
+    color: #cbd5e1;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   CLOSE BUTTON
+===================================================== */
+
+.profile-close-btn {
+    width: 38px;
+    height: 38px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.profile-close-btn:hover {
+    background: #d4a017;
+
+    color: #101d31;
+
+    transform: rotate(90deg);
+}
+
+
+/* =====================================================
+   PROFILE CONTENT
+===================================================== */
+
+.profile-content {
+    padding: 30px 25px 40px;
+}
+
+
+/* =====================================================
+   PROFILE AVATAR
+===================================================== */
+
+.profile-avatar {
+    width: 90px;
+    height: 90px;
+
+    margin: 5px auto 15px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #d4a017;
+
+    color: #101d31;
+
+    font-size: 36px;
+    font-weight: 700;
+
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.18);
+}
+
+
+/* =====================================================
+   PROFILE NAME
+===================================================== */
+
+.profile-content h3 {
+    margin: 0;
+
+    text-align: center;
+
+    color: #101d31;
+
+    font-size: 23px;
+    font-weight: 700;
+}
+
+.profile-email {
+    margin: 6px 0 30px;
+
+    text-align: center;
+
+    color: #777;
+
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   PROFILE FORM
+===================================================== */
+
+.profile-content .form-group {
+    margin-bottom: 18px;
+}
+
+.profile-content .form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #333;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.profile-content .form-group input {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 7px;
+
+    outline: none;
+
+    background: white;
+
+    color: #333;
+
+    font-size: 14px;
+
+    transition: all 0.2s ease;
+}
+
+.profile-content .form-group input:focus {
+    border-color: #d4a017;
+
+    box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.12);
+}
+
+.profile-content .form-group input:disabled {
+    background: #f4f5f7;
+
+    color: #777;
+
+    cursor: not-allowed;
+}
+
+
+/* =====================================================
+   UPDATE PROFILE BUTTON
+===================================================== */
+
+.profile-update-btn {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    margin-top: 8px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #101d31;
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.profile-update-btn:hover {
+    background: #d4a017;
+
+    color: #101d31;
+}
+
+.profile-update-btn:disabled {
+    opacity: 0.7;
+
+    cursor: not-allowed;
+}
+
+
+/* =====================================================
+   LOADING / ERROR
+===================================================== */
+
+.profile-loading {
+    min-height: 350px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    text-align: center;
+
+    color: #777;
+
+    font-size: 14px;
+}
+
+.profile-loading i {
+    font-size: 30px;
+
+    color: #d4a017;
+}
+
+
+/* =====================================================
+   RETRY BUTTON
+===================================================== */
+
+.profile-retry-btn {
+    margin-top: 8px;
+
+    padding: 9px 18px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background: #101d31;
+
+    color: white;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.profile-retry-btn:hover {
+    background: #d4a017;
+
+    color: #101d31;
+}
+
+
+/* =====================================================
+   DRAWER SCROLLBAR
+===================================================== */
+
+.profile-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.profile-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.profile-container::-webkit-scrollbar-thumb {
+    background: #c8c8c8;
+
+    border-radius: 10px;
+}
+
+.profile-container::-webkit-scrollbar-thumb:hover {
+    background: #d4a017;
+}
+
+
+/* =====================================================
+   ANIMATION
+===================================================== */
+
+@keyframes profileSlide {
+
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes profileOverlay {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* =========================================
+   CONTACT OWNER DRAWER
+========================================= */
+
+.profile-overlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    z-index: 9998;
+}
+
+
+/* =========================================
+   DRAWER
+========================================= */
+
+.profile-drawer {
+    position: fixed;
+
+    top: 0;
+    right: 0;
+
+    width: 420px;
+    max-width: 100%;
+
+    height: 100vh;
+
+    background: #ffffff;
+
+    z-index: 9999;
+
+    transform: translateX(100%);
+
+    transition: transform 0.35s ease;
+
+    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.25);
+
+    overflow-y: auto;
+}
+
+
+/* OPEN */
+
+.profile-drawer.open {
+    transform: translateX(0);
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.profile-drawer-header {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 20px 24px;
+
+    background: #101d31;
+
+    color: white;
+}
+
+.profile-drawer-header h3 {
+    margin: 0;
+
+    font-size: 21px;
+
+    font-weight: 700;
+
+    color: white;
+}
+
+.profile-drawer-header small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #cbd5e1;
+
+    font-size: 12px;
+}
+
+
+/* =========================================
+   CLOSE BUTTON
+========================================= */
+
+.profile-drawer-header button {
+    width: 38px;
+
+    height: 38px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    cursor: pointer;
+
+    transition: 0.25s ease;
+}
+
+.profile-drawer-header button:hover {
+    background: #d4a017;
+
+    color: #101d31;
+
+    transform: rotate(90deg);
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.profile-drawer-content {
+    padding: 28px 24px 40px;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+.profile-drawer-content .form-group {
+    margin-bottom: 20px;
+}
+
+.profile-drawer-content .form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #101d31;
+}
+
+.profile-drawer-content textarea {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border: 1px solid #d8dee8;
+
+    border-radius: 7px;
+
+    resize: vertical;
+
+    outline: none;
+
+    font-size: 14px;
+
+    box-sizing: border-box;
+
+    transition: 0.2s ease;
+}
+
+.profile-drawer-content textarea:focus {
+    border-color: #d4a017;
+
+    box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.12);
+}
+
+
+/* =========================================
+   SEND ENQUIRY BUTTON
+========================================= */
+
+.profile-drawer-content .profile-update-btn {
+    width: 100%;
+
+    padding: 13px 16px;
+
+    border: none;
+
+    border-radius: 7px;
+
+    background: #101d31;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.25s ease;
+}
+
+.profile-drawer-content .profile-update-btn:hover {
+    background: #d4a017;
+
+    color: #101d31;
+}
+
+.profile-drawer-content .profile-update-btn:disabled {
+    opacity: 0.7;
+
+    cursor: not-allowed;
+}
+
+
+
+
+
+
 
 /* =====================================================
    TABLET RESPONSIVE
@@ -1438,6 +2049,18 @@ body {
     .info-grid {
         grid-template-columns: 1fr 1fr;
     }
+
+    .profile-container {
+        width: 390px;
+    }
+
+    .profile-header {
+        padding: 18px 20px;
+    }
+
+    .profile-content {
+        padding: 25px 20px 35px;
+    }
 }
 
 
@@ -1503,4 +2126,44 @@ body {
     .info-grid {
         grid-template-columns: 1fr;
     }
+
+    .profile-container {
+        width: 100%;
+    }
+
+    .profile-header {
+        padding: 17px 18px;
+    }
+
+    .profile-header h2 {
+        font-size: 20px;
+    }
+
+    .profile-content {
+        padding: 25px 18px 35px;
+    }
+
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+
+        font-size: 32px;
+    }
+
+    .profile-content h3 {
+        font-size: 21px;
+    }
+
+    .profile-drawer {
+        width: 100%;
+    }
+
+    .profile-drawer-header {
+        padding: 17px 18px;
+    }
+
+    .profile-drawer-content {
+        padding: 24px 18px 35px;
+    }
+
 }

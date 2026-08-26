@@ -24,10 +24,7 @@ const Navbar = () => {
   useEffect(() => {
     checkUser();
 
-    // Login / Logout ke baad navbar update
     window.addEventListener("authChange", checkUser);
-
-    // Dusre tab mein login/logout
     window.addEventListener("storage", checkUser);
 
     return () => {
@@ -40,13 +37,19 @@ const Navbar = () => {
   // Logout
   // =========================
   const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+
+    // Cancel
+    if (!confirmLogout) return;
+
+    // Confirm
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
     setUser(null);
     setMenuOpen(false);
 
-    // Navbar immediately update
+    // Navbar update
     window.dispatchEvent(new Event("authChange"));
 
     navigate("/login");
@@ -61,9 +64,7 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      {/* =========================
-          Logo
-      ========================= */}
+      {/* Logo */}
       <Link to="/" className="logo" onClick={closeMenu}>
         <span className="logo-icon">
           <i className="bi bi-house-door-fill"></i>
@@ -71,9 +72,7 @@ const Navbar = () => {
         Dream<span>Estate</span>
       </Link>
 
-      {/* =========================
-          Mobile Menu Button
-      ========================= */}
+      {/* Mobile Menu Button */}
       <button
         type="button"
         className="menu-btn"
@@ -83,41 +82,33 @@ const Navbar = () => {
         <i className={menuOpen ? "bi bi-x-lg" : "bi bi-list"}></i>
       </button>
 
-      {/* =========================
-          Navigation Links
-      ========================= */}
+      {/* Navigation Links */}
       <ul className={`nav-links ${menuOpen ? "show-menu" : ""}`}>
-        {/* Home */}
         <li>
           <Link to="/" onClick={closeMenu}>
             Home
           </Link>
         </li>
 
-        {/* Properties */}
         <li>
           <Link to="/properties" onClick={closeMenu}>
             Properties
           </Link>
         </li>
 
-        {/* About */}
         <li>
           <Link to="/about" onClick={closeMenu}>
             About
           </Link>
         </li>
 
-        {/* Contact */}
         <li>
           <Link to="/contact" onClick={closeMenu}>
             Contact
           </Link>
         </li>
 
-        {/* =========================
-            Wishlist - Logged User
-        ========================= */}
+        {/* Wishlist */}
         {user && (
           <li>
             <Link to="/wishlist" onClick={closeMenu}>
@@ -127,9 +118,7 @@ const Navbar = () => {
           </li>
         )}
 
-        {/* =========================
-            Add Property - Owner Only
-        ========================= */}
+        {/* Add Property */}
         {user?.role === "owner" && (
           <li>
             <Link to="/create-property" onClick={closeMenu}>
@@ -140,18 +129,14 @@ const Navbar = () => {
         )}
       </ul>
 
-      {/* =========================
-          Auth Buttons
-      ========================= */}
+      {/* Auth Buttons */}
       <div className="auth-buttons">
         {!user ? (
           <>
-            {/* Login */}
             <Link to="/login" className="login-btn" onClick={closeMenu}>
               Login
             </Link>
 
-            {/* Register */}
             <Link to="/register" className="register-btn" onClick={closeMenu}>
               Register
             </Link>

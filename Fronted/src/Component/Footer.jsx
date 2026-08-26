@@ -1,6 +1,38 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const Footer = () => {
+  const [showTopButton, setShowTopButton] = useState(false);
+
+  // =========================
+  // Show / Hide Top Button
+  // =========================
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowTopButton(true);
+      } else {
+        setShowTopButton(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // =========================
+  // Go To Top
+  // =========================
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <footer
       style={{
@@ -205,6 +237,20 @@ const Footer = () => {
       </div>
 
       {/* =========================
+          GO TO TOP BUTTON
+      ========================= */}
+      {showTopButton && (
+        <button
+          type="button"
+          className="go-to-top"
+          onClick={scrollToTop}
+          aria-label="Go to top"
+        >
+          <i className="bi bi-arrow-up"></i>
+        </button>
+      )}
+
+      {/* =========================
           FOOTER CSS
       ========================= */}
       <style>
@@ -237,6 +283,50 @@ const Footer = () => {
             background: #d4a017;
             color: #061326;
             transform: translateY(-3px);
+          }
+
+          /* =========================
+             GO TO TOP
+          ========================= */
+          .go-to-top {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: #d4a017;
+            color: #061326;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            transition: all 0.3s ease;
+          }
+
+          .go-to-top:hover {
+            background: #061326;
+            color: #d4a017;
+            transform: translateY(-5px);
+          }
+
+          .go-to-top i {
+            line-height: 1;
+          }
+
+          @media (max-width: 576px) {
+            .go-to-top {
+              right: 15px;
+              bottom: 15px;
+              width: 44px;
+              height: 44px;
+              font-size: 18px;
+            }
           }
         `}
       </style>

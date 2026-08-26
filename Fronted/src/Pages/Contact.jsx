@@ -1,6 +1,44 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Contact = () => {
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+
+  // =========================
+  // Handle Change
+  // =========================
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // =========================
+  // Send Message
+  // =========================
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    setShowSuccess(true);
+
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      subject: "",
+      message: "",
+    });
+  };
+
   return (
     <>
       {/* =========================
@@ -81,7 +119,6 @@ const Contact = () => {
 
                   <div>
                     <h6 className="fw-bold mb-1">Our Office</h6>
-
                     <p className="text-muted mb-0">Ahmedabad, Gujarat, India</p>
                   </div>
                 </div>
@@ -102,7 +139,6 @@ const Contact = () => {
 
                   <div>
                     <h6 className="fw-bold mb-1">Phone</h6>
-
                     <p className="text-muted mb-0">+91 98765 43210</p>
                   </div>
                 </div>
@@ -123,7 +159,6 @@ const Contact = () => {
 
                   <div>
                     <h6 className="fw-bold mb-1">Email</h6>
-
                     <p className="text-muted mb-0">info@dreamestate.com</p>
                   </div>
                 </div>
@@ -171,7 +206,7 @@ const Contact = () => {
 
                 <h3 className="fw-bold mb-4">How Can We Help You?</h3>
 
-                <form>
+                <form onSubmit={handleSubmit}>
                   <div className="row g-3">
                     {/* Name */}
                     <div className="col-md-6">
@@ -181,8 +216,12 @@ const Contact = () => {
 
                       <input
                         type="text"
+                        name="name"
                         className="form-control"
                         placeholder="Enter your name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
 
@@ -194,8 +233,12 @@ const Contact = () => {
 
                       <input
                         type="email"
+                        name="email"
                         className="form-control"
                         placeholder="Enter your email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
 
@@ -207,8 +250,12 @@ const Contact = () => {
 
                       <input
                         type="tel"
+                        name="phone"
                         className="form-control"
                         placeholder="Enter your phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
 
@@ -218,8 +265,12 @@ const Contact = () => {
 
                       <input
                         type="text"
+                        name="subject"
                         className="form-control"
                         placeholder="Property enquiry"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        required
                       />
                     </div>
 
@@ -228,16 +279,20 @@ const Contact = () => {
                       <label className="form-label fw-semibold">Message</label>
 
                       <textarea
+                        name="message"
                         className="form-control"
                         rows="5"
                         placeholder="Write your message..."
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
                       ></textarea>
                     </div>
 
                     {/* Button */}
                     <div className="col-12">
                       <button
-                        type="button"
+                        type="submit"
                         className="btn px-4 py-2 text-white"
                         style={{
                           background: "#061326",
@@ -385,6 +440,96 @@ const Contact = () => {
           </Link>
         </div>
       </section>
+
+      {/* =====================================================
+          SUCCESS CONFIRMATION MODAL
+      ===================================================== */}
+      {showSuccess && (
+        <div
+          onClick={() => setShowSuccess(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0, 0, 0, 0.65)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: "20px",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "100%",
+              maxWidth: "430px",
+              background: "#fff",
+              borderRadius: "24px",
+              padding: "40px 30px",
+              textAlign: "center",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+              animation: "contactPopup 0.3s ease",
+            }}
+          >
+            {/* Success Icon */}
+            <div
+              style={{
+                width: "75px",
+                height: "75px",
+                borderRadius: "50%",
+                background: "#d4a017",
+                color: "#061326",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 20px",
+                fontSize: "36px",
+              }}
+            >
+              <i className="bi bi-check-lg"></i>
+            </div>
+
+            <h3 className="fw-bold mb-2" style={{ color: "#061326" }}>
+              Message Sent Successfully!
+            </h3>
+
+            <p className="text-muted mb-4">
+              Thank you for contacting DreamEstate. Our team will get back to
+              you soon.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => setShowSuccess(false)}
+              className="btn px-4 py-2 text-white"
+              style={{
+                background: "#061326",
+                borderRadius: "10px",
+              }}
+            >
+              <i className="bi bi-check-circle me-2"></i>
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Popup Animation */}
+      <style>
+        {`
+          @keyframes contactPopup {
+            from {
+              opacity: 0;
+              transform: scale(0.85) translateY(20px);
+            }
+
+            to {
+              opacity: 1;
+              transform: scale(1) translateY(0);
+            }
+          }
+        `}
+      </style>
     </>
   );
 };

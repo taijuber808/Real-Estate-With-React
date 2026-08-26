@@ -10,9 +10,10 @@ import Contact from "./Pages/Contact";
 import Footer from "./Component/Footer";
 import Wishlist from "./Pages/Wishlist";
 import PropertyListing from "./Pages/PropertyListing";
-import AdminDashboard from "./Pages/Admin";
 import PropertyEdit from "./Pages/ProperyEdit";
 import CreateProperty from "./Pages/CreateProperty";
+import Profile from "./Pages/Profile";
+import OwnerDashboard from "./Pages/Owner";
 
 function App() {
   return (
@@ -23,7 +24,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/admin" element={<OwnerDashboard/>} />
         <Route path="/properties" element={<PropertyListing />} />
         <Route path="/property-edit/:id" element={<PropertyEdit />} />
         <Route path="/wishlist" element={<Wishlist />} />
