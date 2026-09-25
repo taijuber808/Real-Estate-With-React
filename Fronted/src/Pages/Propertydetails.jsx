@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 
-const API = "http://localhost:8080/api";
+const API = `${import.meta.env.VITE_API_URL}/api`;
 
 const PropertyDetails = () => {
   const { id } = useParams();
@@ -17,6 +17,7 @@ const PropertyDetails = () => {
   // =========================
   // Get Property
   // =========================
+
   useEffect(() => {
     const getProperty = async () => {
       try {

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
+// Production API configuration
+const API = `${import.meta.env.VITE_API_URL}/api`;
+
 const PropertyListing = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,7 +23,7 @@ const PropertyListing = () => {
   const token = localStorage.getItem("token");
 
   // =========================
-  // URL Search
+  // URL SEARCH
   // =========================
   useEffect(() => {
     const search = searchParams.get("search");
@@ -31,98 +34,109 @@ const PropertyListing = () => {
   }, [searchParams]);
 
   // =========================
-  // Fetch Properties
+  // FETCH PROPERTIES
   // =========================
-  const fetchProperties = async () => {
-    try {
-      setLoading(true);
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        setLoading(true);
 
-      const query = new URLSearchParams();
+        const query = new URLSearchParams();
 
-      if (location.trim()) {
-        query.append("search", location.trim());
-      }
+        if (location.trim()) {
+          query.append("search", location.trim());
+        }
 
-      if (type) {
-        query.append("propertyType", type);
-      }
+        if (type) {
+          query.append("propertyType", type);
+        }
 
-      if (bhk) {
-        query.append("bedrooms", bhk);
-      }
+        if (bhk) {
+          query.append("bedrooms", bhk);
+        }
 
-      if (priceRange === "under50") {
-        query.append("maxPrice", 5000000);
-      }
+        if (priceRange === "under50") {
+          query.append("maxPrice", 5000000);
+        }
 
-      if (priceRange === "50-80") {
-        query.append("minPrice", 5000000);
-        query.append("maxPrice", 8000000);
-      }
+        if (priceRange === "50-80") {
+          query.append("minPrice", 5000000);
+          query.append("maxPrice", 8000000);
+        }
 
-      if (priceRange === "80-120") {
-        query.append("minPrice", 8000000);
-        query.append("maxPrice", 12000000);
-      }
+        if (priceRange === "80-120") {
+          query.append("minPrice", 8000000);
+          query.append("maxPrice", 12000000);
+        }
 
-      if (priceRange === "above120") {
-        query.append("minPrice", 12000000);
-      }
+        if (priceRange === "above120") {
+          query.append("minPrice", 12000000);
+        }
 
-      query.append("page", 1);
-      query.append("limit", 20);
+        query.append("page", 1);
+        query.append("limit", 20);
 
-      const response = await fetch(
-        `http://localhost:8080/api/properties?${query.toString()}`,
-      );
+        const response = await fetch(`${API}/properties?${query.toString()}`);
 
-      const result = await response.json();
+        const result = await response.json();
 
-      if (response.ok && result.status) {
-        setProperties(result.data || []);
-      } else {
+        if (response.ok && result.status) {
+          setProperties(result.data || []);
+        } else {
+          setProperties([]);
+        }
+      } catch (error) {
+        console.log("Property fetch error:", error);
         setProperties([]);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.log("Property fetch error:", error);
-      setProperties([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchProperties();
+  }, [location, type, bhk, priceRange]);
 
   // =========================
-  // Fetch Wishlist
+  // FETCH WISHLIST
   // =========================
-  const fetchWishlist = async () => {
-    if (!token) {
-      setWishlistItems([]);
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:8080/api/wishlist", {
-        headers: {
-          token,
-        },
-      });
-
-      const result = await response.json();
-
-      if (result.status) {
-        const ids = result.data.map((item) =>
-          typeof item.property === "object" ? item.property._id : item.property,
-        );
-
-        setWishlistItems(ids);
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      if (!token) {
+        setWishlistItems([]);
+        return;
       }
-    } catch (error) {
-      console.log("Wishlist fetch error:", error);
-    }
-  };
+
+      try {
+        const response = await fetch(`${API}/wishlist`, {
+          headers: {
+            token,
+          },
+        });
+
+        const result = await response.json();
+
+        if (result.status) {
+          const ids = result.data.map((item) =>
+            typeof item.property === "object"
+              ? item.property._id
+              : item.property,
+          );
+
+          setWishlistItems(ids);
+        } else {
+          setWishlistItems([]);
+        }
+      } catch (error) {
+        console.log("Wishlist fetch error:", error);
+        setWishlistItems([]);
+      }
+    };
+
+    fetchWishlist();
+  }, [token]);
 
   // =========================
-  // Wishlist
+  // WISHLIST
   // =========================
   const handleWishlist = async (propertyId) => {
     if (!token) {
@@ -139,20 +153,18 @@ const PropertyListing = () => {
     try {
       setWishlistLoading(propertyId);
 
-      const response = await fetch(
-        `http://localhost:8080/api/wishlist/${propertyId}`,
-        {
-          method: "POST",
-          headers: {
-            token,
-          },
+      const response = await fetch(`${API}/wishlist/${propertyId}`, {
+        method: "POST",
+        headers: {
+          token,
         },
-      );
+      });
 
       const result = await response.json();
 
-      if (result.status) {
+      if (response.ok && result.status) {
         setWishlistItems((prev) => [...prev, propertyId]);
+
         alert("Property added to wishlist ❤️");
       } else {
         alert(result.message || "Failed to add wishlist");
@@ -166,7 +178,7 @@ const PropertyListing = () => {
   };
 
   // =========================
-  // Delete Property
+  // DELETE PROPERTY
   // =========================
   const handleDelete = async (propertyId) => {
     const confirmDelete = window.confirm(
@@ -182,19 +194,16 @@ const PropertyListing = () => {
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/properties/${propertyId}`,
-        {
-          method: "DELETE",
-          headers: {
-            token,
-          },
+      const response = await fetch(`${API}/properties/${propertyId}`, {
+        method: "DELETE",
+        headers: {
+          token,
         },
-      );
+      });
 
       const result = await response.json();
 
-      if (result.status) {
+      if (response.ok && result.status) {
         setProperties((prev) =>
           prev.filter((property) => property._id !== propertyId),
         );
@@ -210,14 +219,14 @@ const PropertyListing = () => {
   };
 
   // =========================
-  // Edit Property
+  // EDIT PROPERTY
   // =========================
   const handleEdit = (propertyId) => {
     navigate(`/property-edit/${propertyId}`);
   };
 
   // =========================
-  // Clear Filters
+  // CLEAR FILTERS
   // =========================
   const clearFilters = () => {
     setLocation("");
@@ -228,20 +237,12 @@ const PropertyListing = () => {
     navigate("/properties");
   };
 
-  // =========================
-  // Fetch Data
-  // =========================
-  useEffect(() => {
-    fetchProperties();
-    fetchWishlist();
-  }, [location, type, bhk, priceRange]);
-
   return (
     <section className="py-5 bg-light min-vh-100">
-      {/* =========================
-          HEADER
-      ========================= */}
       <div className="container">
+        {/* =========================
+            HEADER
+        ========================= */}
         <div className="text-center mb-5" data-aos="fade-down">
           <p
             className="text-uppercase fw-semibold mb-2"

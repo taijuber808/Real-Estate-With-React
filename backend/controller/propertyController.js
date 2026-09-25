@@ -54,6 +54,12 @@ export const createProperty = async (req, res) => {
 // =========================
 export const getProperties = async (req, res) => {
   try {
+
+    const total = await Property.countDocuments();
+
+    console.log("DATABASE:", Property.db.name);
+    console.log("TOTAL PROPERTIES:", total);
+
     const {
       search,
       city,

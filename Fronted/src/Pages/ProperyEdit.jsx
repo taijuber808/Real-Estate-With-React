@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+const API = `${import.meta.env.VITE_API_URL}/api`;
+
 const PropertyEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -26,65 +28,93 @@ const PropertyEdit = () => {
   // =========================
   // Fetch Property
   // =========================
-  const fetchProperty = async () => {
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        `http://localhost:8080/api/properties/${id}`,
-      );
-
-      const result = await response.json();
-
-      if (!result.status) {
-        alert(result.message || "Property not found");
-        navigate("/properties");
-        return;
-      }
-
-      const property = result.data;
-
-      // =========================
-      // Check Owner
-      // =========================
+  useEffect(() => {
+    const fetchProperty = async () => {
+      const token = localStorage.getItem("token");
       const user = JSON.parse(localStorage.getItem("user") || "null");
 
-      const propertyOwnerId =
-        typeof property.owner === "object"
-          ? property.owner?._id
-          : property.owner;
-
-      if (!user || propertyOwnerId?.toString() !== user.id?.toString()) {
-        alert("You can only edit your own property");
-        navigate("/properties");
+      if (!token || !user) {
+        alert("Please login first");
+        navigate("/login");
         return;
       }
 
-      // =========================
-      // Set Form Data
-      // =========================
-      setFormData({
-        title: property.title || "",
-        description: property.description || "",
-        price: property.price || "",
-        propertyType: property.propertyType || "",
-        location: property.location || "",
-        city: property.city || "",
-        area: property.area || "",
-        bedrooms: property.bedrooms || "",
-        bathrooms: property.bathrooms || "",
-        areaSize: property.areaSize || "",
-        images: property.images?.join(", ") || "",
-        status: property.status || "available",
-      });
-    } catch (error) {
-      console.log("Fetch property error:", error);
-      alert("Something went wrong");
+      try {
+        setLoading(true);
+
+        const response = await fetch(`${API}/properties/${id}`, {
+          headers: {
+            token,
+          },
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.status) {
+          alert(result.message || "Property not found");
+          navigate("/properties");
+          return;
+        }
+
+        const property = result.data;
+
+        // =========================
+        // Owner Check
+        // =========================
+
+        const propertyOwnerId =
+          typeof property.owner === "object"
+            ? property.owner?._id
+            : property.owner;
+
+        // User id can be stored as either "id" or "_id"
+        const loggedInUserId = user?.id || user?._id;
+
+        if (
+          user.role !== "owner" ||
+          propertyOwnerId?.toString() !== loggedInUserId?.toString()
+        ) {
+          alert("You can only edit your own property");
+          navigate("/properties");
+          return;
+        }
+
+        // =========================
+        // Set Form
+        // =========================
+
+        setFormData({
+          title: property.title || "",
+          description: property.description || "",
+          price: property.price ?? "",
+          propertyType: property.propertyType || "",
+          location: property.location || "",
+          city: property.city || "",
+          area: property.area || "",
+          bedrooms: property.bedrooms ?? "",
+          bathrooms: property.bathrooms ?? "",
+          areaSize: property.areaSize ?? "",
+          images: Array.isArray(property.images)
+            ? property.images.join(", ")
+            : "",
+          status: property.status || "available",
+        });
+      } catch (error) {
+        console.log("Fetch property error:", error);
+        alert("Unable to connect with server");
+        navigate("/properties");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (!id) {
       navigate("/properties");
-    } finally {
-      setLoading(false);
+      return;
     }
-  };
+
+    fetchProperty();
+  }, [id, navigate]);
 
   // =========================
   // Handle Input
@@ -112,44 +142,95 @@ const PropertyEdit = () => {
       return;
     }
 
+    // =========================
+    // Basic Validation
+    // =========================
+
+    if (!formData.title.trim()) {
+      alert("Please enter property title");
+      return;
+    }
+
+    if (!formData.propertyType) {
+      alert("Please select property type");
+      return;
+    }
+
+    if (!formData.price || Number(formData.price) <= 0) {
+      alert("Please enter a valid price");
+      return;
+    }
+
+    if (!formData.city.trim()) {
+      alert("Please enter city");
+      return;
+    }
+
+    if (!formData.location.trim()) {
+      alert("Please enter location");
+      return;
+    }
+
+    if (!formData.area.trim()) {
+      alert("Please enter area/locality");
+      return;
+    }
+
+    if (!formData.areaSize || Number(formData.areaSize) <= 0) {
+      alert("Please enter a valid area size");
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      alert("Please enter property description");
+      return;
+    }
+
     try {
       setUpdating(true);
+
+      // =========================
+      // Images
+      // =========================
 
       const imageArray = formData.images
         .split(",")
         .map((image) => image.trim())
-        .filter(Boolean);
+        .filter((image) => image !== "");
+
+      // =========================
+      // Update Data
+      // =========================
 
       const data = {
-        title: formData.title,
-        description: formData.description,
+        title: formData.title.trim(),
+        description: formData.description.trim(),
         price: Number(formData.price),
         propertyType: formData.propertyType,
-        location: formData.location,
-        city: formData.city,
-        area: formData.area,
-        bedrooms: Number(formData.bedrooms),
-        bathrooms: Number(formData.bathrooms),
+        location: formData.location.trim(),
+        city: formData.city.trim(),
+        area: formData.area.trim(),
+        bedrooms: Number(formData.bedrooms || 0),
+        bathrooms: Number(formData.bathrooms || 0),
         areaSize: Number(formData.areaSize),
         images: imageArray,
         status: formData.status,
       };
 
-      const response = await fetch(
-        `http://localhost:8080/api/properties/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            token,
-          },
-          body: JSON.stringify(data),
+      const response = await fetch(`${API}/properties/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          token,
         },
-      );
+        body: JSON.stringify(data),
+      });
 
       const result = await response.json();
 
-      if (result.status) {
+      console.log("Update response:", result);
+
+      if (response.ok && result.status) {
         alert("Property updated successfully ✅");
         navigate("/properties");
       } else {
@@ -157,23 +238,11 @@ const PropertyEdit = () => {
       }
     } catch (error) {
       console.log("Update property error:", error);
-      alert("Something went wrong");
+      alert("Unable to connect with server");
     } finally {
       setUpdating(false);
     }
   };
-
-  // =========================
-  // Load Property
-  // =========================
-  useEffect(() => {
-    if (!id) {
-      navigate("/properties");
-      return;
-    }
-
-    fetchProperty();
-  }, [id]);
 
   // =========================
   // Loading
@@ -195,8 +264,12 @@ const PropertyEdit = () => {
   }
 
   return (
-    <section className="py-5 bg-white">
+    <section className="py-5 bg-light min-vh-100">
       <div className="container">
+        {/* =========================
+            HEADER
+        ========================= */}
+
         <div className="text-center mb-5">
           <p
             className="text-uppercase fw-semibold mb-2"
@@ -214,9 +287,13 @@ const PropertyEdit = () => {
           <p className="text-muted">Update your property information below.</p>
         </div>
 
+        {/* =========================
+            FORM
+        ========================= */}
+
         <div className="row justify-content-center">
           <div className="col-lg-9">
-            <div className="card border-0 shadow-sm p-4">
+            <div className="card border-0 shadow-sm rounded-4 p-4">
               <form onSubmit={handleSubmit}>
                 <div className="row g-3">
                   {/* Title */}
@@ -229,13 +306,14 @@ const PropertyEdit = () => {
                       type="text"
                       name="title"
                       className="form-control"
+                      placeholder="Luxury 3 BHK Villa"
                       value={formData.title}
                       onChange={handleChange}
                       required
                     />
                   </div>
 
-                  {/* Property Type */}
+                  {/* Type */}
                   <div className="col-md-6">
                     <label className="form-label fw-semibold">
                       Property Type
@@ -279,6 +357,7 @@ const PropertyEdit = () => {
                       type="text"
                       name="city"
                       className="form-control"
+                      placeholder="Ahmedabad"
                       value={formData.city}
                       onChange={handleChange}
                       required
@@ -293,6 +372,7 @@ const PropertyEdit = () => {
                       type="text"
                       name="location"
                       className="form-control"
+                      placeholder="SG Highway"
                       value={formData.location}
                       onChange={handleChange}
                       required
@@ -309,6 +389,7 @@ const PropertyEdit = () => {
                       type="text"
                       name="area"
                       className="form-control"
+                      placeholder="Bodakdev"
                       value={formData.area}
                       onChange={handleChange}
                       required
@@ -383,6 +464,7 @@ const PropertyEdit = () => {
                       type="text"
                       name="images"
                       className="form-control"
+                      placeholder="url1, url2, url3"
                       value={formData.images}
                       onChange={handleChange}
                     />
@@ -402,6 +484,7 @@ const PropertyEdit = () => {
                       name="description"
                       className="form-control"
                       rows="5"
+                      placeholder="Describe your property..."
                       value={formData.description}
                       onChange={handleChange}
                       required
@@ -417,6 +500,7 @@ const PropertyEdit = () => {
                         onClick={() => navigate("/properties")}
                         disabled={updating}
                       >
+                        <i className="bi bi-arrow-left me-2"></i>
                         Cancel
                       </button>
 

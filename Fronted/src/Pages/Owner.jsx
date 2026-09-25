@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:8080/api";
-
 const OwnerDashboard = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,27 +19,26 @@ const OwnerDashboard = () => {
       return;
     }
 
-    fetchProperties();
-  }, []);
+    const fetchProperties = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/properties`,
+        );
 
-  // =========================
-  // Get Properties
-  // =========================
-  const fetchProperties = async () => {
-    try {
-      const response = await fetch(`${API_URL}/properties`);
+        const data = await response.json();
 
-      const data = await response.json();
-
-      if (data.status) {
-        setProperties(data.data);
+        if (data.status) {
+          setProperties(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching properties:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchProperties();
+  }, [navigate, token, user?.role]);
 
   // =========================
   // Delete Property
@@ -54,12 +51,15 @@ const OwnerDashboard = () => {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(`${API_URL}/properties/${id}`, {
-        method: "DELETE",
-        headers: {
-          token: token,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/properties/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            token: token,
+          },
         },
-      });
+      );
 
       const data = await response.json();
 

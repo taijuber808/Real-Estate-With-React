@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -15,34 +15,33 @@ const Profile = () => {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState("");
 
+
   // ================================
   // GET PROFILE
   // ================================
-  const getProfile = async () => {
+  const getProfile = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
 
       const token = localStorage.getItem("token");
 
-      console.log("PROFILE TOKEN:", token ? "Token exists" : "Token missing");
-
       if (!token) {
         setError("Please login first");
         return;
       }
 
-      const response = await fetch("http://localhost:8080/api/profile", {
-        method: "GET",
-        headers: {
-          token: token,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/profile`,
+        {
+          method: "GET",
+          headers: {
+            token,
+          },
         },
-      });
+      );
 
       const data = await response.json();
-
-      console.log("PROFILE STATUS:", response.status);
-      console.log("PROFILE RESPONSE:", data);
 
       if (response.ok && data.user) {
         setUser(data.user);
@@ -56,19 +55,18 @@ const Profile = () => {
         setError(data.message || "Profile load nahi hua");
       }
     } catch (error) {
-      console.log("Profile error:", error);
+      console.error("Profile error:", error);
       setError("Unable to connect with server");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  // ================================
-  // LOAD PROFILE ON PAGE LOAD
-  // ================================
+    // LOAD PROFILE
   useEffect(() => {
     getProfile();
-  }, []);
+  }, [getProfile]);
+
 
   // ================================
   // INPUT CHANGE
@@ -97,17 +95,20 @@ const Profile = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:8080/api/profile", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/profile`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+          },
+          body: JSON.stringify({
+            name: form.name,
+            phone: form.phone,
+          }),
         },
-        body: JSON.stringify({
-          name: form.name,
-          phone: form.phone,
-        }),
-      });
+      );
 
       const data = await response.json();
 

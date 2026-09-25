@@ -20,10 +20,12 @@ const Register = () => {
   // Input Change
   // =========================
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
     setError("");
   };
@@ -36,33 +38,124 @@ const Register = () => {
 
     setError("");
 
-    // Password Check
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
+    // =========================
+    // Clean Data
+    // =========================
+    const name = formData.name.trim();
+    const email = formData.email.trim().toLowerCase();
+    const phone = formData.phone.trim();
+    const password = formData.password;
+    const confirmPassword = formData.confirmPassword;
+    const role = formData.role;
+
+    // =========================
+    // Name Validation
+    // =========================
+    if (!name) {
+      setError("Please enter your full name.");
       return;
     }
 
-    if (formData.password.length < 6) {
+    if (name.length < 2) {
+      setError("Name must be at least 2 characters.");
+      return;
+    }
+
+    // =========================
+    // Email Validation
+    // =========================
+    if (!email) {
+      setError("Please enter your email.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    // =========================
+    // Phone Validation
+    // =========================
+    if (!phone) {
+      setError("Please enter your phone number.");
+      return;
+    }
+
+    // Remove spaces, +91, hyphen etc.
+    const cleanPhone = phone.replace(/\D/g, "");
+
+    // If user enters +91XXXXXXXXXX
+    const normalizedPhone =
+      cleanPhone.length === 12 && cleanPhone.startsWith("91")
+        ? cleanPhone.slice(2)
+        : cleanPhone;
+
+    // Indian 10 digit mobile validation
+    const phoneRegex = /^[6-9]\d{9}$/;
+
+    if (!phoneRegex.test(normalizedPhone)) {
+      setError("Please enter a valid 10-digit Indian mobile number.");
+      return;
+    }
+
+    // =========================
+    // Role Validation
+    // =========================
+    const allowedRoles = ["user", "owner"];
+
+    if (!allowedRoles.includes(role)) {
+      setError("Invalid account type selected.");
+      return;
+    }
+
+    // =========================
+    // Password Validation
+    // =========================
+    if (!password) {
+      setError("Please enter a password.");
+      return;
+    }
+
+    if (password.length < 6) {
       setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    // =========================
+    // Confirm Password
+    // =========================
+    if (!confirmPassword) {
+      setError("Please confirm your password.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
       return;
     }
 
     try {
       setLoading(true);
 
-      const response = await fetch("http://localhost:8080/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            phone: normalizedPhone,
+            password,
+            role,
+          }),
         },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password,
-          role: formData.role,
-        }),
-      });
+      );
 
       const result = await response.json();
 
@@ -71,7 +164,7 @@ const Register = () => {
       // =========================
       // Success
       // =========================
-      if (response.ok) {
+      if (response.ok && result.status !== false) {
         alert(result.message || "Registration successful ❤️");
 
         navigate("/login");
@@ -161,6 +254,7 @@ const Register = () => {
                 value={formData.name}
                 onChange={handleChange}
                 required
+                autoComplete="name"
                 style={{
                   paddingLeft: "42px",
                 }}
@@ -190,6 +284,7 @@ const Register = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                autoComplete="email"
                 style={{
                   paddingLeft: "42px",
                 }}
@@ -215,15 +310,21 @@ const Register = () => {
               <input
                 type="tel"
                 name="phone"
-                placeholder="Enter your phone number"
+                placeholder="Enter 10-digit mobile number"
                 value={formData.phone}
                 onChange={handleChange}
                 required
+                autoComplete="tel"
+                maxLength="13"
                 style={{
                   paddingLeft: "42px",
                 }}
               />
             </div>
+
+            <small className="text-muted">
+              Example: 9876543210 or +91 9876543210
+            </small>
           </div>
 
           {/* Account Type */}
@@ -265,6 +366,8 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
+                minLength="6"
+                autoComplete="new-password"
                 style={{
                   paddingLeft: "42px",
                 }}
@@ -296,6 +399,8 @@ const Register = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
+                minLength="6"
+                autoComplete="new-password"
                 style={{
                   paddingLeft: "42px",
                 }}

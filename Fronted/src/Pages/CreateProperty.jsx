@@ -102,14 +102,17 @@ const CreateProperty = () => {
         status: formData.status,
       };
 
-      const response = await fetch("http://localhost:8080/api/properties", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          token: token,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/properties`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+          },
+          body: JSON.stringify(data),
         },
-        body: JSON.stringify(data),
-      });
+      );
 
       const result = await response.json();
 
@@ -129,7 +132,6 @@ const CreateProperty = () => {
       setLoading(false);
     }
   };
-
   return (
     <section className="py-5 bg-white">
       <div className="container">
