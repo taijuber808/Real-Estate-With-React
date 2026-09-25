@@ -16,7 +16,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://real-estate-with-react-isx5.vercel.app",
+  "https://real-estate-with-react-ew3i.vercel.app",
 ];
 
 app.use(
